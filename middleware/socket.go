@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-09-01 22:44:09
- * @LastEditTime: 2019-09-02 14:47:28
+ * @LastEditTime: 2019-09-02 16:23:37
  * @LastEditors: Please set LastEditors
  */
 package middleware
@@ -37,7 +37,7 @@ func (filter *WebSocketCallFilter) MetmodAuthMiddleware(c *gin.Context) {
 
 	if c.Request.URL.String() == socket.GinEchoUrl {
 		log.Println("MetmodAuthMiddleware => Someone coming to Websocket service of us, happy!! ")
-		if "websocket" == c.Request.Header.Get("Upgrade") {
+		if c.Request.Header.Get("Upgrade") != "" {
 			c.Next()
 		}
 		log.Println("MetmodAuthMiddleware => 原来你个憨憨，我送你一程。 ")

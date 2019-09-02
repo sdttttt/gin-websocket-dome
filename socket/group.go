@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: SDTTTTT
  * @Date: 2019-08-31 19:54:47
- * @LastEditTime: 2019-09-02 14:46:21
+ * @LastEditTime: 2019-09-02 17:47:34
  * @LastEditors: Please set LastEditors
  */
 package socket
@@ -18,6 +18,11 @@ import (
 type ConnectGroup struct {
 	sync.RWMutex
 	conns map[*websocket.Conn]bool
+
+	/** Tasks里存储所有你所定义的定时任务
+	它们会在连接初始化的时候被执行
+	*/
+	tasks map[*time.Ticker]func(*websocket.Conn)
 }
 
 var once sync.Once
@@ -36,7 +41,8 @@ func GetGroup() *ConnectGroup {
 	once.Do(
 		func() {
 			log.Println(time.Now().String(), "Connect Pool initializer ...")
-			group = &ConnectGroup{conns: make(map[*websocket.Conn]bool)}
+			group = &ConnectGroup{conns: make(map[*websocket.Conn]bool),
+				tasks: make(map[*time.Ticker]func(*websocket.Conn))}
 		})
 
 	return group
@@ -47,6 +53,10 @@ const (
 	maxMessageSize   = 8192
 	closeGracePeriod = 12 * time.Second
 )
+
+func (group *ConnectGroup) GetConnCount() int {
+	return len(group.conns)
+}
 
 func (group *ConnectGroup) AddConnect(conn *websocket.Conn) {
 	group.Lock()
@@ -86,10 +96,6 @@ func (group *ConnectGroup) DelConnect(conn *websocket.Conn) {
 	group.Broadcast(websocket.TextMessage, ([]byte)(conn.RemoteAddr().String()+"離開了"))
 }
 
-func (group *ConnectGroup) IsLive() {
-
-}
-
 /**
  * @description 你肯定非常想看到这个方法,这个方法会向ConnectPool 所有的连接ReadBuffer中写入数据
  * @param int , [] byte
@@ -106,4 +112,38 @@ func (group *ConnectGroup) Broadcast(messageType int, message []byte) error {
 		}
 	}
 	return err
+}
+
+/** @description 增加定时任务
+ */
+func (group *ConnectGroup) AddTickerTask(s time.Duration, connEvent func(*websocket.Conn)) {
+	ticker := time.NewTicker(s)
+
+	group.Lock()
+	group.tasks[ticker] = connEvent
+	group.Unlock()
+}
+
+/** @description  Task增加完成之后使用 ExecuteTasks 加载所有的任务
+ */
+func (group *ConnectGroup) ExecuteTasks() {
+
+	if group.tasks == nil {
+		return
+	}
+
+	log.Println("当前列队任务数 : ", len(group.tasks))
+
+	for tiker, task := range group.tasks {
+		go func(t *time.Ticker) {
+			for {
+				<-t.C
+				for conn, status := range group.conns {
+					if status {
+						task(conn)
+					}
+				}
+			}
+		}(tiker)
+	}
 }
