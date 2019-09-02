@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-09-01 22:44:09
- * @LastEditTime: 2019-09-02 16:23:37
+ * @LastEditTime: 2019-09-02 20:13:39
  * @LastEditors: Please set LastEditors
  */
 package middleware
@@ -41,7 +41,6 @@ func (filter *WebSocketCallFilter) MetmodAuthMiddleware(c *gin.Context) {
 			c.Next()
 		}
 		log.Println("MetmodAuthMiddleware => 原来你个憨憨，我送你一程。 ")
-
 		// TIP : 当middleware想阻止访问某资源的时候请使用Abort  他会办好后面的一切.
 		c.Abort()
 		c.Redirect(http.StatusFound, login.LoginViewUrl)

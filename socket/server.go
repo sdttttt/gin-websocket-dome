@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-31 15:15:14
- * @LastEditTime: 2019-09-02 16:11:02
+ * @LastEditTime: 2019-09-02 21:50:05
  * @LastEditors: Please set LastEditors
  */
 package socket
@@ -46,7 +46,6 @@ func changeProtocol(writer http.ResponseWriter, request *http.Request) *websocke
 func echo(writer http.ResponseWriter, request *http.Request) {
 
 	c := changeProtocol(writer, request)
-
 	defer c.Close()
 
 	ProcessConnect(c)
@@ -58,6 +57,7 @@ func echo(writer http.ResponseWriter, request *http.Request) {
 const GinEchoUrl = "/ws"
 
 func GinEcho(context *gin.Context) {
+
 	echo(context.Writer, context.Request)
 }
 
