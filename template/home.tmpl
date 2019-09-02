@@ -17,14 +17,14 @@
 
             if( window.WebSocket ){ 
                 
-                socket = new WebSocket("ws://localhost:8080/ws"); 
+                socket = new WebSocket("ws://localhost/ws"); 
 
-                socket.onmessage = ( event )=>{
+                socket.onmessage = ( event ) => {
                     document.getElementById("data").innerHTML += "<br>" + event.data;
                     console.log(event);
                 };
 
-                socket.onopen = (evnet)=>{
+                socket.onopen = (evnet) => {
                     console.log(event);
                     alert("连接打开");
                 };

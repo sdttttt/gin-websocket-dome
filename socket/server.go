@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-31 15:15:14
- * @LastEditTime: 2019-09-01 17:34:25
+ * @LastEditTime: 2019-09-01 22:42:26
  * @LastEditors: Please set LastEditors
  */
 package socket
@@ -11,6 +11,8 @@ import (
 	"flag"
 	"log"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 
 	"github.com/gorilla/websocket"
 )
@@ -45,9 +47,23 @@ func echo(writer http.ResponseWriter, request *http.Request) {
 
 	c := changeProtocol(writer, request)
 
+	defer c.Close()
+
 	ProcessConnect(c)
 }
 
+/*
+*	為 Gin 框架提供快速啟動,請把它註冊到您的路由中
+ */
+const GinEchoUrl = "/ws"
+
+func GinEcho(context *gin.Context) {
+	echo(context.Writer, context.Request)
+}
+
+/*
+*	如果你想單獨啟動這個 WebSocket 服務器的話 ， 可以使用這個
+ */
 func Run() {
 	flag.Parse()
 	log.SetFlags(0)

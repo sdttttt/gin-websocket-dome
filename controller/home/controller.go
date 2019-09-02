@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-31 00:48:59
- * @LastEditTime: 2019-08-31 18:21:13
+ * @LastEditTime: 2019-09-02 13:18:42
  * @LastEditors: Please set LastEditors
  */
 package home
@@ -12,6 +12,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
+
+/**
+ * @description 控制器的声明请按照处理器对应路由路径（ ** 对应 **Url ）
+ */
 
 const (
 	HelloUrl = "/"
