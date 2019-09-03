@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-09-02 18:18:55
- * @LastEditTime: 2019-09-02 23:05:07
+ * @LastEditTime: 2019-09-03 18:23:34
  * @LastEditors: Please set LastEditors
  */
 package socket
@@ -31,6 +31,9 @@ var connectHub *ConnectHub
 
 var once sync.Once
 
+/**
+ * @description 客户端连接池引用
+ */
 func GetConnectHub() *ConnectHub {
 	once.Do(
 		func() {
@@ -47,6 +50,9 @@ func GetConnectHub() *ConnectHub {
 	return connectHub
 }
 
+/**
+ * @description 启动Websocket服务中心
+ */
 func (hub *ConnectHub) RunAndListen() {
 
 	log.Println("Hub Starting ...")
@@ -77,18 +83,30 @@ func (hub *ConnectHub) RunAndListen() {
 	}
 }
 
+/**
+ * @description 获取当前所有客户端的数量
+ */
 func (hub *ConnectHub) GetCrrentCount() int {
 	return len(hub.clients)
 }
 
+/**
+ * @description 增加定时消息通知
+ */
 func (hub *ConnectHub) AddAfter(s time.Duration, after func() []byte) {
 	hub.afters[time.NewTicker(s)] = after
 }
 
+/**
+ * @description 增加定时任务队列
+ */
 func (hub *ConnectHub) AddTask(s time.Duration, task func(*Client)) {
 	hub.tasks[time.NewTicker(s)] = task
 }
 
+/**
+ * @description 执行所有的定时消息通知
+ */
 func (hub *ConnectHub) ExecuteAfter() {
 	if hub.afters == nil {
 		return
@@ -105,6 +123,9 @@ func (hub *ConnectHub) ExecuteAfter() {
 	}
 }
 
+/**
+ * @description 加载所有任务队列
+ */
 func (hub *ConnectHub) LoadTask() {
 	if hub.tasks == nil {
 		return

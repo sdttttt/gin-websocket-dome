@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-31 15:15:14
- * @LastEditTime: 2019-09-02 21:50:05
+ * @LastEditTime: 2019-09-03 18:12:21
  * @LastEditors: Please set LastEditors
  */
 package socket
@@ -46,7 +46,6 @@ func changeProtocol(writer http.ResponseWriter, request *http.Request) *websocke
 func echo(writer http.ResponseWriter, request *http.Request) {
 
 	c := changeProtocol(writer, request)
-	defer c.Close()
 
 	ProcessConnect(c)
 }

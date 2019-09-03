@@ -2,16 +2,14 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-09-01 22:44:09
- * @LastEditTime: 2019-09-02 20:13:39
+ * @LastEditTime: 2019-09-03 18:29:38
  * @LastEditors: Please set LastEditors
  */
 package middleware
 
 import (
-	"gin-web/controller/login"
 	"gin-web/socket"
 	"log"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -40,10 +38,8 @@ func (filter *WebSocketCallFilter) MetmodAuthMiddleware(c *gin.Context) {
 		if c.Request.Header.Get("Upgrade") != "" {
 			c.Next()
 		}
-		log.Println("MetmodAuthMiddleware => 原来你个憨憨，我送你一程。 ")
 		// TIP : 当middleware想阻止访问某资源的时候请使用Abort  他会办好后面的一切.
-		c.Abort()
-		c.Redirect(http.StatusFound, login.LoginViewUrl)
+		c.AbortWithStatus(200)
 	}
 
 	c.Next()

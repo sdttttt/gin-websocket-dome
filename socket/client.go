@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-09-02 18:19:09
- * @LastEditTime: 2019-09-02 20:50:25
+ * @LastEditTime: 2019-09-03 18:24:17
  * @LastEditors: Please set LastEditors
  */
 package socket
@@ -10,7 +10,6 @@ package socket
 import (
 	"bytes"
 	"gin-web/configuration"
-	"log"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -19,12 +18,17 @@ import (
 type Client struct {
 	conn          *websocket.Conn
 	messageBuffer chan []byte
+
+	done chan struct{}
 }
 
 func (client *Client) reader() {
 
 	defer func() {
 		client.conn.Close()
+		GetConnectHub().broadcast <- ([]byte)(client.conn.RemoteAddr().String() + "be away")
+		GetConnectHub().unregister <- client
+		println("reader下线")
 	}()
 
 	client.conn.SetReadLimit(configuration.MaxMessageSize)
@@ -36,13 +40,11 @@ func (client *Client) reader() {
 
 	for {
 		_, message, err := client.conn.ReadMessage()
-		log.Println(message)
 		if err != nil {
 			return
 		}
 
 		message = bytes.TrimSpace(message)
-		log.Println(message)
 		GetConnectHub().broadcast <- message
 	}
 
@@ -54,7 +56,8 @@ func (client *Client) writer() {
 
 	defer func() {
 		ticker.Stop()
-		client.conn.Close()
+		println("writer下线")
+		close(client.done)
 	}()
 
 	for {
@@ -85,18 +88,23 @@ func (client *Client) writer() {
 
 }
 
+/**
+ * @description 客户端处理机制
+ */
 func ProcessConnect(c *websocket.Conn) {
 
 	client := &Client{
 		conn:          c,
 		messageBuffer: make(chan []byte),
+		done:          make(chan struct{}),
 	}
 
 	GetConnectHub().register <- client
 
-	log.Println("启动玄冥二老")
 	go client.reader()
 	go client.writer()
 
-	select {}
+	<-client.done
+
+	println("the end")
 }
