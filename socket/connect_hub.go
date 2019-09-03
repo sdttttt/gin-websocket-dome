@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-09-02 18:18:55
- * @LastEditTime: 2019-09-02 22:05:43
+ * @LastEditTime: 2019-09-02 23:05:07
  * @LastEditors: Please set LastEditors
  */
 package socket
@@ -24,7 +24,7 @@ type ConnectHub struct {
 
 	tasks map[*time.Ticker]func(*Client)
 
-	afters map[*time.Ticker][]byte
+	afters map[*time.Ticker]func() []byte
 }
 
 var connectHub *ConnectHub
@@ -40,7 +40,7 @@ func GetConnectHub() *ConnectHub {
 				unregister: make(chan *Client),
 				broadcast:  make(chan []byte),
 				tasks:      make(map[*time.Ticker]func(*Client)),
-				afters:     make(map[*time.Ticker][]byte),
+				afters:     make(map[*time.Ticker]func() []byte),
 			}
 		})
 
@@ -81,8 +81,8 @@ func (hub *ConnectHub) GetCrrentCount() int {
 	return len(hub.clients)
 }
 
-func (hub *ConnectHub) AddAfter(s time.Duration, after string) {
-	hub.afters[time.NewTicker(s)] = ([]byte)(after)
+func (hub *ConnectHub) AddAfter(s time.Duration, after func() []byte) {
+	hub.afters[time.NewTicker(s)] = after
 }
 
 func (hub *ConnectHub) AddTask(s time.Duration, task func(*Client)) {
@@ -95,12 +95,13 @@ func (hub *ConnectHub) ExecuteAfter() {
 	}
 
 	for ticker, after := range hub.afters {
-		go func(t *time.Ticker) {
+		time.Sleep(1 * time.Second)
+		go func(t *time.Ticker, af func() []byte) {
 			for {
 				<-t.C
-				hub.broadcast <- after
+				hub.broadcast <- af()
 			}
-		}(ticker)
+		}(ticker, after)
 	}
 }
 
@@ -110,16 +111,15 @@ func (hub *ConnectHub) LoadTask() {
 	}
 
 	for ticker, task := range hub.tasks {
-
-		go func(t *time.Ticker) {
+		go func(t *time.Ticker, k func(*Client)) {
 			for {
 				<-t.C
 				for client, status := range hub.clients {
 					if status {
-						task(client)
+						k(client)
 					}
 				}
 			}
-		}(ticker)
+		}(ticker, task)
 	}
 }
