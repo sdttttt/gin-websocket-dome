@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-09-03 11:19:17
- * @LastEditTime: 2019-09-03 17:12:16
+ * @LastEditTime: 2019-09-03 21:05:58
  * @LastEditors: Please set LastEditors
  */
 package service
@@ -38,6 +38,13 @@ func GetUserService() *IUserService {
 }
 
 func (service *IUserService) CreateUser(user *dao.User) bool {
+	var count int
+	dao.GetDbInstance().Model(&dao.User{}).Where("username = ?", "sdttttt").Count(&count)
+
+	if count > 0 {
+		user.Username = ""
+		return false
+	}
 	user.Password = util.ToSha1(user.Password)
 	if service.DbConnect.Create(user); user.ID > 0 {
 		return true
@@ -48,7 +55,7 @@ func (service *IUserService) CreateUser(user *dao.User) bool {
 
 func (service *IUserService) FindUser(user *dao.User) bool {
 	user.Password = util.ToSha1(user.Password)
-	service.DbConnect.Find(user)
+	service.DbConnect.Where("username = ? AND password = ?", user.Username, user.Password).Find(user)
 	if user.Password == "" || user.Username == "" || user.ID == 0 {
 		return false
 	}
