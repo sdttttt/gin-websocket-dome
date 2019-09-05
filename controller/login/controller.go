@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-31 00:49:27
- * @LastEditTime: 2019-09-03 19:58:14
+ * @LastEditTime: 2019-09-05 17:37:39
  * @LastEditors: Please set LastEditors
  */
 package login
@@ -16,12 +16,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type (
-	LoginForm struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
-	}
-)
+type LoginForm struct {
+	Username string `json:"username"`
+
+	Password string `json:"password"`
+}
 
 func (form *LoginForm) check() bool {
 
@@ -53,6 +52,8 @@ func LoginHandler(context *gin.Context) {
 		context.JSON(http.StatusOK, gin.H{
 			"error": "您输入有误",
 		})
+
+		return
 	}
 
 	println(form.Username)
@@ -62,9 +63,10 @@ func LoginHandler(context *gin.Context) {
 
 	if service.GetUserService().FindUser(user) {
 		println(user.Username, user.Password)
-		util.SetSession(context, "token", user.ID)
+		util.SetSession(context, "token", user.Password)
 		context.JSON(http.StatusOK, gin.H{"success": "good!"})
+		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{"error": "fuck"})
+	context.JSON(http.StatusOK, gin.H{"error": "用户名或密码不正确"})
 }
