@@ -21,6 +21,8 @@ var AWebSocketCallFilter = &WebSocketCallFilter{}
 如果对你造成了困扰，我真的非常抱歉
 */
 type (
+
+	
 	AbstractWebSocketCallFilter interface {
 		MetmodAuthMiddleware(*gin.Context)
 	}

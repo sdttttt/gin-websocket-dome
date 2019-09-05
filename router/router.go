@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-30 23:57:34
- * @LastEditTime: 2019-09-02 01:19:55
+ * @LastEditTime: 2019-09-05 17:25:20
  * @LastEditors: Please set LastEditors
  */
 package router
@@ -10,9 +10,12 @@ package router
 import (
 	"gin-web/controller/home"
 	"gin-web/controller/login"
+	"gin-web/controller/register"
 	"gin-web/middleware"
 	"gin-web/socket"
 
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,6 +23,9 @@ type Router struct {
 	Gin *gin.Engine
 }
 
+/**
+ * @description rigister All Controller
+ */
 func (this *Router) RigisterController() {
 
 	/**
@@ -33,14 +39,24 @@ func (this *Router) RigisterController() {
 	* Router List
 	 */
 	this.Gin.GET(home.HelloUrl, home.Hello)
+
 	this.Gin.GET(login.LoginViewUrl, login.LoginView)
 	this.Gin.POST(login.LoginHandlerUrl, login.LoginHandler)
+
+	this.Gin.GET(register.RegisterViewUrl, register.RegisterView)
+	this.Gin.POST(register.RegisterHandlerUrl, register.RegisterHandler)
+
 	this.Gin.GET(socket.GinEchoUrl, socket.GinEcho)
 
 }
 
+/**
+ * @description rigister All Middleware
+ */
 func (this *Router) RegisterMiddleware() {
 
+	store := cookie.NewStore([]byte("secret"))
+	this.Gin.Use(sessions.Sessions("mysession", store))
 	this.Gin.Use(middleware.AWebSocketCallFilter.MetmodAuthMiddleware)
 
 }

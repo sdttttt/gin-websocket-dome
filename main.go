@@ -2,7 +2,7 @@
  * @Description: Application 入口
  * @Author: your name
  * @Date: 2019-08-30 19:11:42
- * @LastEditTime: 2019-09-02 22:45:20
+ * @LastEditTime: 2019-09-04 17:13:10
  * @LastEditors: Please set LastEditors
  */
 package main
@@ -21,6 +21,8 @@ func main() {
 
 	socket.ConnectCountNoticeEnable()
 	socket.TimeNoticeEnable()
+
+	
 
 	go socket.GetConnectHub().RunAndListen()
 
