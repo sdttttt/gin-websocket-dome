@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-09-02 13:16:23
- * @LastEditTime: 2019-09-04 17:06:51
+ * @LastEditTime: 2019-09-09 22:50:52
  * @LastEditors: Please set LastEditors
  */
 package configuration
@@ -15,9 +15,8 @@ const (
 
 	/**
 	 * ****************************************
-	 *
 	 * 	Socket 配置
-	 * ********************************************
+	 * *****************************************
 	 */
 	WriterWait = 60 * time.Second
 

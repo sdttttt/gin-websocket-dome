@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-09-02 18:18:55
- * @LastEditTime: 2019-09-03 18:23:34
+ * @LastEditTime: 2019-09-17 18:26:55
  * @LastEditors: Please set LastEditors
  */
 package socket
@@ -59,6 +59,8 @@ func (hub *ConnectHub) RunAndListen() {
 
 	hub.LoadTask()
 	hub.ExecuteAfter()
+
+	log.Println("Hub OK...")
 
 	for {
 		select {

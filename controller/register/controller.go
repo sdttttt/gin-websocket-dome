@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-31 00:49:46
- * @LastEditTime: 2019-09-05 17:48:07
+ * @LastEditTime: 2019-09-12 19:10:52
  * @LastEditors: Please set LastEditors
  */
 package register
@@ -65,9 +65,6 @@ func RegisterHandler(context *gin.Context) {
 		})
 		return
 	}
-
-	println(form.Username)
-	println(form.Password)
 
 	userInfo := &dao.User{Username: form.Username, Password: form.Repassword}
 

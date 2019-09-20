@@ -22,8 +22,6 @@ func main() {
 	socket.ConnectCountNoticeEnable()
 	socket.TimeNoticeEnable()
 
-	
-
 	go socket.GetConnectHub().RunAndListen()
 
 	router.RegisterMiddleware()
