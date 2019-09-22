@@ -43,5 +43,22 @@ const (
 
 	DataBaseType = "mysql"
 
-	GDBC = "root:root@tcp(192.168.0.104:3306)/jojo?charset=utf8&parseTime=True&loc=Local"
+	DB_Address = "192.168.0.103"
+
+	DB_Post = "3306"
+
+	DB_Protocol = "tcp"
+
+	DB_Name = "jojo"
+
+	DB_Charset = "utf8"
+
+	DB_ParseTime = true
+
+	DB_Username = "root"
+
+	DB_Password = "root"
+
+	//
+	GDBC = DB_Username + ":" + DB_Password + "@tcp(192.168.0.103:3306)/jojo?charset=utf8&parseTime=True&loc=Local"
 )

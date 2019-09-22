@@ -11,6 +11,7 @@ import (
 	"gin-web/dao"
 	"gin-web/util"
 	"sync"
+	"time"
 
 	"github.com/jinzhu/gorm"
 )
@@ -29,6 +30,9 @@ var aIUserService *IUserService
 
 var userServiceOnce sync.Once
 
+/*
+	A Instance
+*/
 func GetUserService() *IUserService {
 	userServiceOnce.Do(func() {
 		aIUserService = &IUserService{DbConnect: dao.GetDbInstance()}
@@ -48,6 +52,8 @@ func (service *IUserService) CreateUser(user *dao.User) bool {
 		return false
 	}
 	user.Password = util.ToSha1(user.Password)
+	user.CreateTime = time.Now()
+	user.UpdateTime = time.Now()
 	if service.DbConnect.Create(user); user.ID > 0 {
 		return true
 	}

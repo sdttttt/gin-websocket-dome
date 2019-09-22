@@ -27,7 +27,7 @@ func TestFindUser(b *testing.T) {
 
 func TestCreateUser(t *testing.T) {
 
-	user := &dao.User{Username: "sdttttt", Password: "7758258"}
+	user := &dao.User{Username: "TestG", Password: "7758258"}
 	println(service.GetUserService().CreateUser(user))
 
 	println(user.ID)
@@ -41,6 +41,13 @@ func TestFindUserCount(t *testing.T) {
 	dao.GetDbInstance().Model(&dao.User{}).Where("username = ?", "sdttttt").Count(&count)
 
 	println(count > 0)
+}
+
+/*
+	测试GDBC文本是否正确
+*/
+func TestGetGDBCString(t *testing.T) {
+	//println(dao.ParseConnectParam())
 }
 
 func BenchmarkFindUser(b *testing.B) {
