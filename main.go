@@ -20,7 +20,6 @@ func main() {
 	router := &router.Router{Gin: application}
 
 	socket.ConnectCountNoticeEnable()
-	socket.TimeNoticeEnable()
 
 	go socket.GetConnectHub().RunAndListen()
 

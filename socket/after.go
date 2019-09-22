@@ -18,22 +18,28 @@ import (
 	- Support
 	  -目前任务列队只支持2种方式
 		 1. 定时向用户发送数据型的任务
-		 2. 面向用户连接操作型的任务
+		 2. 定时面向用户连接操作型的任务
 扩展方式：
-	通过 GetConnectHub 获取用户链接池对象
-	使用 AddAfter 输入定时器 And Handler
+	- 使用 AddAfterEnable 加入 定时器 And 处理器
+	- 处理器的返回值必须实现FullMessage
 */
 
 func TimeNoticeEnable() {
-	GetConnectHub().AddAfter(configuration.TimeNoticeInterval,
-		func() []byte {
-			return ([]byte)(time.Now().String())
+	AddAfterEnable(configuration.TimeNoticeInterval,
+		func() *FullMessage {
+
+			return &FullMessage{Username: "【服务器君】", Message: time.Now().String()}
 		})
 }
 
 func ConnectCountNoticeEnable() {
-	GetConnectHub().AddAfter(configuration.ConnectCountNoticeInterval,
-		func() []byte {
-			return ([]byte)("Crrent Count : " + strconv.Itoa(GetConnectHub().GetCrrentCount()))
+	AddAfterEnable(configuration.ConnectCountNoticeInterval,
+		func() *FullMessage {
+			return &FullMessage{Username: "【服务器君】",
+				Message: ("Crrent Count : " + strconv.Itoa(GetConnectHub().GetCrrentCount()))}
 		})
+}
+
+func AddAfterEnable(s time.Duration, after func() *FullMessage) {
+	GetConnectHub().AddAfter(s, after)
 }

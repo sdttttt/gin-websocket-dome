@@ -66,6 +66,8 @@ func RegisterHandler(context *gin.Context) {
 		return
 	}
 
+	println(form.Username, " =>", form.Password)
+
 	userInfo := &dao.User{Username: form.Username, Password: form.Repassword}
 
 	if !service.GetUserService().CreateUser(userInfo) {

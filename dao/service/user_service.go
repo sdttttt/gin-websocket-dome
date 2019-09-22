@@ -41,16 +41,24 @@ func GetUserService() *IUserService {
 	return aIUserService
 }
 
+func (service *IUserService) ExistsUser(username string) bool {
+	var count int
+	service.DbConnect.Model(&dao.User{}).Where("username = ?", username).Count(&count)
+	if count > 0 {
+		return true
+	}
+	return false
+}
+
 /**
  * @test OK
  */
 func (service *IUserService) CreateUser(user *dao.User) bool {
-	var count int
-	dao.GetDbInstance().Model(&dao.User{}).Where("username = ?", user.Username).Count(&count)
-	if count > 0 {
+	if service.ExistsUser(user.Username) {
 		user.Username = ""
 		return false
 	}
+
 	user.Password = util.ToSha1(user.Password)
 	user.CreateTime = time.Now()
 	user.UpdateTime = time.Now()

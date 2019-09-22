@@ -63,6 +63,6 @@ func (this *Router) RegisterMiddleware() {
 
 	store := cookie.NewStore([]byte("secret"))
 	this.Gin.Use(sessions.Sessions("mysession", store))
-	this.Gin.Use(middleware.AWebSocketCallFilter.MetmodAuthMiddleware)
+	this.Gin.Use(middleware.MetmodAuthMiddleware)
 
 }

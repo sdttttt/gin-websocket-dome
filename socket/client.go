@@ -10,28 +10,38 @@ package socket
 import (
 	"bytes"
 	"gin-web/configuration"
+	"log"
 	"time"
 
 	"github.com/gorilla/websocket"
 )
 
-type Client struct {
+type (
+	Client struct {
 
-	/**
-	* 客户端链接
-	 */
-	conn *websocket.Conn
+		/**
+		* 客户端链接
+		 */
+		conn *websocket.Conn
 
-	/**
-	* 消息缓冲区
-	 */
-	messageBuffer chan []byte
+		/**
+		* 消息缓冲区
+		 */
+		messageBuffer chan []byte
 
-	/**
-	* 客户端结束接受信道
-	 */
-	done chan struct{}
-}
+		/**
+		* 客户端结束接受信道
+		 */
+		done chan struct{}
+
+		user *UserInfo
+	}
+
+	//存贮用户基本信息
+	UserInfo struct {
+		username string
+	}
+)
 
 /**
  * @description 读取器
@@ -65,6 +75,9 @@ func (client *Client) reader() {
 		}
 
 		message = bytes.TrimSpace(message)
+		//执行一次消息包装
+		message = client.messagePackaging(message)
+
 		GetConnectHub().broadcast <- message
 	}
 
@@ -115,15 +128,32 @@ func (client *Client) writer() {
 
 }
 
+/*
+	消息包装，JSON类型发送给客户端，由客户端解析
+*/
+func (client *Client) messagePackaging(message []byte) []byte {
+	OMessage := &FullMessage{
+		Username: client.user.username,
+		Message:  string(message),
+	}
+
+	return OMessage.GetFullMessage()
+}
+
 /**
  * @description 客户端处理机制
  */
-func ProcessConnect(c *websocket.Conn) {
+func ProcessConnect(c *websocket.Conn, username string) {
+
+	log.Println(" => ", username)
 
 	client := &Client{
 		conn:          c,
 		messageBuffer: make(chan []byte),
 		done:          make(chan struct{}),
+		user: &UserInfo{
+			username: username,
+		},
 	}
 
 	GetConnectHub().register <- client

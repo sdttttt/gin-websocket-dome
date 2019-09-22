@@ -24,7 +24,7 @@ type ConnectHub struct {
 
 	tasks map[*time.Ticker]func(*Client)
 
-	afters map[*time.Ticker]func() []byte
+	afters map[*time.Ticker]func() *FullMessage
 }
 
 var connectHub *ConnectHub
@@ -43,7 +43,7 @@ func GetConnectHub() *ConnectHub {
 				unregister: make(chan *Client),
 				broadcast:  make(chan []byte),
 				tasks:      make(map[*time.Ticker]func(*Client)),
-				afters:     make(map[*time.Ticker]func() []byte),
+				afters:     make(map[*time.Ticker]func() *FullMessage),
 			}
 		})
 
@@ -95,7 +95,7 @@ func (hub *ConnectHub) GetCrrentCount() int {
 /**
  * @description 增加定时消息通知
  */
-func (hub *ConnectHub) AddAfter(s time.Duration, after func() []byte) {
+func (hub *ConnectHub) AddAfter(s time.Duration, after func() *FullMessage) {
 	hub.afters[time.NewTicker(s)] = after
 }
 
@@ -116,10 +116,10 @@ func (hub *ConnectHub) ExecuteAfter() {
 
 	for ticker, after := range hub.afters {
 		time.Sleep(1 * time.Second)
-		go func(t *time.Ticker, af func() []byte) {
+		go func(t *time.Ticker, af func() *FullMessage) {
 			for {
 				<-t.C
-				hub.broadcast <- af()
+				hub.broadcast <- af().GetFullMessage()
 			}
 		}(ticker, after)
 	}

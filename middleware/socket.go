@@ -14,26 +14,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var AWebSocketCallFilter = &WebSocketCallFilter{}
-
-/** @description 这里的代码附上我写Java时的习惯,
- 没有约定的代码是我非常不喜欢的
-如果对你造成了困扰，我真的非常抱歉
-*/
-type (
-
-	
-	AbstractWebSocketCallFilter interface {
-		MetmodAuthMiddleware(*gin.Context)
-	}
-
-	WebSocketCallFilter struct{}
-)
-
 /** @description 有些用户会直接访问 Provider of Websocket，
 会在我们的程序中留下错误，这个Middleware就是为了解决这个问题
 */
-func (filter *WebSocketCallFilter) MetmodAuthMiddleware(c *gin.Context) {
+func MetmodAuthMiddleware(c *gin.Context) {
 
 	if c.Request.URL.String() == socket.GinEchoUrl {
 		log.Println("MetmodAuthMiddleware => Someone coming to Websocket service of us, happy!! ")

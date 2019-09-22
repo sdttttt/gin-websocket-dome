@@ -22,6 +22,9 @@ type LoginForm struct {
 	Password string `json:"password"`
 }
 
+/*
+	表单检查
+*/
 func (form *LoginForm) check() bool {
 
 	if len(form.Username) == 0 || form.Username == "" {
@@ -40,10 +43,16 @@ const (
 	LoginHandlerUrl = "/login"
 )
 
+/*
+	View Controller
+*/
 func LoginView(context *gin.Context) {
 	context.HTML(http.StatusOK, "login.tmpl", gin.H{})
 }
 
+/*
+	登陆逻辑处理
+*/
 func LoginHandler(context *gin.Context) {
 	var form LoginForm
 	context.BindJSON(&form)
@@ -52,7 +61,6 @@ func LoginHandler(context *gin.Context) {
 		context.JSON(http.StatusOK, gin.H{
 			"error": "您输入有误",
 		})
-
 		return
 	}
 
@@ -63,7 +71,7 @@ func LoginHandler(context *gin.Context) {
 
 	if service.GetUserService().FindUser(user) {
 		println(user.Username, user.Password)
-		util.SetSession(context, "token", user.Password)
+		util.SetSession(context, "token", user.Username)
 		context.JSON(http.StatusOK, gin.H{"success": "good!"})
 		return
 	}

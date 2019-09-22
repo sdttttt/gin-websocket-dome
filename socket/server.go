@@ -9,6 +9,8 @@ package socket
 
 import (
 	"flag"
+	"gin-web/dao/service"
+	"gin-web/util"
 	"log"
 	"net/http"
 
@@ -40,14 +42,15 @@ func changeProtocol(writer http.ResponseWriter, request *http.Request) *websocke
 	if err != nil {
 		println("upgrade Error -> ", err)
 	}
+
 	return c
 }
 
-func echo(writer http.ResponseWriter, request *http.Request) {
+func echo(writer http.ResponseWriter, request *http.Request, username string) {
 
 	c := changeProtocol(writer, request)
 
-	ProcessConnect(c)
+	ProcessConnect(c, username)
 }
 
 /*
@@ -56,18 +59,26 @@ func echo(writer http.ResponseWriter, request *http.Request) {
 const GinEchoUrl = "/ws"
 
 func GinEcho(context *gin.Context) {
+	username := util.GetSession(context, "token")
+	if result, ok := username.(string); ok && result != "" {
+		if service.GetUserService().ExistsUser(result) {
+			log.Println(username)
+			echo(context.Writer, context.Request, result)
+		}
+	}
+	context.AbortWithStatus(http.StatusBadRequest)
 
-	echo(context.Writer, context.Request)
 }
 
 /*
 *	如果你想單獨啟動這個 WebSocket 服務器的話 ， 可以使用這個
- */
-func Run() {
-	flag.Parse()
-	log.SetFlags(0)
-	http.HandleFunc("/ws", echo)
-
-	println("socket server GO GO GO!!!")
-	log.Fatal(http.ListenAndServe(*addr, nil))
-}
+	这段代码目前不可用，WebSocket 服務器和Gin目前有耦合性
+*/
+//func Run() {
+//	flag.Parse()
+//	log.SetFlags(0)
+//	http.HandleFunc("/ws", echo)
+//
+//	println("socket server GO GO GO!!!")
+//	log.Fatal(http.ListenAndServe(*addr, nil))
+//}
