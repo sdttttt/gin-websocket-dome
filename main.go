@@ -26,5 +26,5 @@ func main() {
 	router.RegisterMiddleware()
 	router.RigisterController()
 
-	application.Run(":8080")
+	application.Run(":10086")
 }
