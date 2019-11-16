@@ -26,7 +26,7 @@ const (
 	TimeNoticeInterval = 30 * time.Second
 
 	//当前人数通知
-	ConnectCountNoticeInterval = 30 * time.Second
+	ConnectCountNoticeInterval = 120 * time.Second
 
 	// ping
 	PingTime = 40 * time.Second
@@ -43,9 +43,9 @@ const (
 
 	DataBaseType = "mysql"
 
-	DB_Address = "192.168.0.103"
+	DB_Address = "121.40.48.194"
 
-	DB_Post = "3306"
+	DB_Post = "33006"
 
 	DB_Protocol = "tcp"
 
@@ -57,8 +57,5 @@ const (
 
 	DB_Username = "root"
 
-	DB_Password = "root"
-
-	//
-	GDBC = DB_Username + ":" + DB_Password + "@tcp(192.168.0.103:3306)/jojo?charset=utf8&parseTime=True&loc=Local"
+	DB_Password = "Zch7758258"
 )

@@ -13,6 +13,10 @@ import (
 	"time"
 )
 
+type Task map[*time.Ticker]func(*Client)
+
+type PushMessage map[*time.Ticker]func() *FullMessage
+
 type ConnectHub struct {
 	clients map[*Client]bool
 
@@ -22,9 +26,9 @@ type ConnectHub struct {
 
 	broadcast chan []byte
 
-	tasks map[*time.Ticker]func(*Client)
+	tasks Task
 
-	afters map[*time.Ticker]func() *FullMessage
+	afters PushMessage
 }
 
 var connectHub *ConnectHub
@@ -33,7 +37,9 @@ var once sync.Once
 
 /**
  * @description 客户端连接池引用
- */
+	一个Application只会有一个连接池，如果需要开放多个连接池
+	需要同时开启多个Application
+*/
 func GetConnectHub() *ConnectHub {
 	once.Do(
 		func() {
@@ -42,8 +48,8 @@ func GetConnectHub() *ConnectHub {
 				register:   make(chan *Client),
 				unregister: make(chan *Client),
 				broadcast:  make(chan []byte),
-				tasks:      make(map[*time.Ticker]func(*Client)),
-				afters:     make(map[*time.Ticker]func() *FullMessage),
+				tasks:      make(Task),
+				afters:     make(PushMessage),
 			}
 		})
 
@@ -62,6 +68,7 @@ func (hub *ConnectHub) RunAndListen() {
 
 	log.Println("Hub OK...")
 
+	// 服务端启动监听
 	for {
 		select {
 

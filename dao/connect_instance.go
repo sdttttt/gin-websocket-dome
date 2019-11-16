@@ -33,7 +33,6 @@ func parseConnectParam() string {
 	}
 
 	GDBC += "&loc=Local"
-
 	return GDBC
 }
 

@@ -62,11 +62,13 @@ func (service *IUserService) CreateUser(user *dao.User) bool {
 	user.Password = util.ToSha1(user.Password)
 	user.CreateTime = time.Now()
 	user.UpdateTime = time.Now()
-	if service.DbConnect.Create(user); user.ID > 0 {
-		return true
+
+	if err := service.DbConnect.Create(user).GetErrors(); err != nil {
+		println(err)
+		return false
 	}
 
-	return false
+	return true
 }
 
 /**
