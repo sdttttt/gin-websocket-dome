@@ -9,6 +9,7 @@ package socket
 
 import (
 	"flag"
+	"gin-web/dao/service"
 	"gin-web/util"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
@@ -57,23 +58,19 @@ const GinEchoUrl = "/ws"
 /*
 	TODO: not Test
 */
-func GinEcho(context *gin.Context) {
-	username := util.SessionTokenIsValidAndReturn(context)
+func GinEcho(ctx *gin.Context) {
 
-	echo(context.Writer, context.Request, username)
+	username := util.GetSession(ctx, "token")
+	if result, ok := username.(string); ok && result != "" {
+		if !service.GetUserService().ExistsUser(result) {
+			return
+		} else {
+			username = result
+		}
+	}
 
-	context.AbortWithStatus(http.StatusBadRequest)
+	echo(ctx.Writer, ctx.Request, username.(string))
+
+	ctx.AbortWithStatus(http.StatusBadRequest)
 
 }
-
-/*
-*
- */
-//func Run() {
-//	flag.Parse()
-//	log.SetFlags(0)
-//	http.HandleFunc("/ws", echo)
-//
-//	println("socket server GO GO GO!!!")
-//	log.Fatal(http.ListenAndServe(*addr, nil))
-//}

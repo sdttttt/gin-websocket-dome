@@ -29,25 +29,16 @@ func (form *LoginForm) check() bool {
 	return true
 }
 
-const (
-	LoginHandlerUrl = "/login"
-)
-
-/*
-	View Controller
-*/
-func LoginView(context *gin.Context) {
-	context.HTML(http.StatusOK, "login.tmpl", gin.H{})
-}
+const LoginHandlerUrl = "/login"
 
 /*
 	登陆逻辑处理
 */
 func LoginHandler(context *gin.Context) {
 	var form LoginForm
-	context.BindJSON(&form)
+	err := context.BindJSON(&form)
 
-	if !form.check() {
+	if !form.check() || err != nil {
 		context.JSON(http.StatusOK, gin.H{
 			"error": "您输入有误",
 		})

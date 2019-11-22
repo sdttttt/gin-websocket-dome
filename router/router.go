@@ -15,12 +15,6 @@ type Router struct {
 	Gin *gin.Engine
 }
 
-/*
-*****************************************************
-* Warning => 这个Project已经改成了前后端分离
-*				视图控制器应该应该已经不会再启动了
-******************************************************
- */
 /**
  * @description rigister All Controller
  */
@@ -29,19 +23,10 @@ func (this *Router) RigisterController() {
 	/**
 	* Resource List
 	 */
-	//this.Gin.LoadHTMLGlob("template/*")
-	//this.Gin.Static("static", "./static")
+	this.Gin.Static("static", "./static")
 
-	/**
-	*
-	* Router List
-	 */
-	//this.Gin.GET(home.HelloUrl, home.Hello)
-
-	//this.Gin.GET(login.LoginViewUrl, login.LoginView)
 	this.Gin.POST(login.LoginHandlerUrl, login.LoginHandler)
 
-	//this.Gin.GET(register.RegisterViewUrl, register.RegisterView)
 	this.Gin.POST(register.RegisterHandlerUrl, register.RegisterHandler)
 
 	this.Gin.GET(socket.GinEchoUrl, socket.GinEcho)
