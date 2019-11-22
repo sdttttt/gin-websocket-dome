@@ -57,5 +57,6 @@ func (this *Router) RegisterMiddleware() {
 
 	this.Gin.Use(sessions.Sessions("mysession", store))
 	this.Gin.Use(middleware.MetmodAuthMiddleware)
+	this.Gin.Use(middleware.OriginAcceptMiddleware)
 
 }
