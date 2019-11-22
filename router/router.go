@@ -1,10 +1,3 @@
-/*
- * @Description: In User Settings Edit
- * @Author: your name
- * @Date: 2019-08-30 23:57:34
- * @LastEditTime: 2019-09-05 17:25:20
- * @LastEditors: Please set LastEditors
- */
 package router
 
 import (
@@ -28,7 +21,6 @@ type Router struct {
 *				视图控制器应该应该已经不会再启动了
 ******************************************************
  */
-
 /**
  * @description rigister All Controller
  */
@@ -37,8 +29,8 @@ func (this *Router) RigisterController() {
 	/**
 	* Resource List
 	 */
-	this.Gin.LoadHTMLGlob("template/*")
-	this.Gin.Static("static", "./static")
+	//this.Gin.LoadHTMLGlob("template/*")
+	//this.Gin.Static("static", "./static")
 
 	/**
 	*
@@ -62,6 +54,7 @@ func (this *Router) RigisterController() {
 func (this *Router) RegisterMiddleware() {
 
 	store := cookie.NewStore([]byte("secret"))
+
 	this.Gin.Use(sessions.Sessions("mysession", store))
 	this.Gin.Use(middleware.MetmodAuthMiddleware)
 

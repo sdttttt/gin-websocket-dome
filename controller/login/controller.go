@@ -1,24 +1,15 @@
-/*
- * @Description: In User Settings Edit
- * @Author: your name
- * @Date: 2019-08-31 00:49:27
- * @LastEditTime: 2019-09-05 17:37:39
- * @LastEditors: Please set LastEditors
- */
 package login
 
 import (
 	"gin-web/dao"
 	"gin-web/dao/service"
 	"gin-web/util"
-	"net/http"
-
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 type LoginForm struct {
 	Username string `json:"username"`
-
 	Password string `json:"password"`
 }
 
@@ -39,7 +30,6 @@ func (form *LoginForm) check() bool {
 }
 
 const (
-	LoginViewUrl    = "/login"
 	LoginHandlerUrl = "/login"
 )
 

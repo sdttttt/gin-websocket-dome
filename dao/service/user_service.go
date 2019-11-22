@@ -18,7 +18,6 @@ import (
 
 type UserService interface {
 	CreateUser(*dao.User) bool
-
 	FindUser(*dao.User) *dao.User
 }
 
@@ -28,6 +27,9 @@ type IUserService struct {
 
 var aIUserService *IUserService
 
+/*
+   sync.Once 可以保证代码只会被执行一次
+*/
 var userServiceOnce sync.Once
 
 /*
@@ -44,10 +46,7 @@ func GetUserService() *IUserService {
 func (service *IUserService) ExistsUser(username string) bool {
 	var count int
 	service.DbConnect.Model(&dao.User{}).Where("username = ?", username).Count(&count)
-	if count > 0 {
-		return true
-	}
-	return false
+	return count > 0
 }
 
 /**

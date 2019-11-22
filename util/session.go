@@ -8,6 +8,7 @@
 package util
 
 import (
+	"gin-web/dao/service"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
@@ -16,6 +17,18 @@ func SetSession(context *gin.Context, key string, value interface{}) {
 	session := sessions.Default(context)
 	session.Set(key, value)
 	session.Save()
+}
+
+/*
+	TODO: not test
+*/
+func SessionTokenIsValidAndReturn(ctx *gin.Context) string {
+	username := GetSession(ctx, "token")
+	if result, ok := username.(string); ok && result != "" {
+		if service.GetUserService().ExistsUser(result) {
+			return result
+		}
+	}
 }
 
 func GetSession(context *gin.Context, key string) interface{} {

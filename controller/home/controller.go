@@ -28,6 +28,5 @@ const (
 )
 
 func Hello(context *gin.Context) {
-	context.U
 	context.HTML(http.StatusOK, "home.tmpl", nil)
 }

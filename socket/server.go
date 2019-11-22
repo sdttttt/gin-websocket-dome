@@ -9,14 +9,10 @@ package socket
 
 import (
 	"flag"
-	"gin-web/dao/service"
 	"gin-web/util"
-	"log"
-	"net/http"
-
 	"github.com/gin-gonic/gin"
-
 	"github.com/gorilla/websocket"
+	"net/http"
 )
 
 /**
@@ -58,22 +54,21 @@ func echo(writer http.ResponseWriter, request *http.Request, username string) {
  */
 const GinEchoUrl = "/ws"
 
+/*
+	TODO: not Test
+*/
 func GinEcho(context *gin.Context) {
-	username := util.GetSession(context, "token")
-	if result, ok := username.(string); ok && result != "" {
-		if service.GetUserService().ExistsUser(result) {
-			log.Println(username)
-			echo(context.Writer, context.Request, result)
-		}
-	}
+	username := util.SessionTokenIsValidAndReturn(context)
+
+	echo(context.Writer, context.Request, username)
+
 	context.AbortWithStatus(http.StatusBadRequest)
 
 }
 
 /*
-*	如果你想單獨啟動這個 WebSocket 服務器的話 ， 可以使用這個
-	这段代码目前不可用，WebSocket 服務器和Gin目前有耦合性
-*/
+*
+ */
 //func Run() {
 //	flag.Parse()
 //	log.SetFlags(0)
