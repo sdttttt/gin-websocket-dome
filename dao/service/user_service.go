@@ -62,7 +62,7 @@ func (service *IUserService) CreateUser(user *dao.User) bool {
 	user.CreateTime = time.Now()
 	user.UpdateTime = time.Now()
 
-	if err := service.DbConnect.Create(user).GetErrors(); err != nil {
+	if err := service.DbConnect.Create(user).GetErrors(); len(err) != 0 {
 		println(err)
 		return false
 	}
