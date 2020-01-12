@@ -24,7 +24,7 @@ func MetmodAuthMiddleware(c *gin.Context) {
 		if c.Request.Header.Get("Upgrade") != "" {
 			c.Next()
 		}
-		// TIP : 当middleware想阻止访问某资源的时候请使用Abort  他会办好后面的一切.
+		// tip: 当middleware想阻止访问某资源的时候请使用Abort  他会办好后面的一切.
 		c.AbortWithStatus(200)
 	}
 
