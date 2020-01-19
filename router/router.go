@@ -4,7 +4,6 @@ import (
 	"gin-web/controller/login"
 	"gin-web/controller/register"
 	"gin-web/middleware"
-	"gin-web/socket"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
@@ -29,8 +28,6 @@ func (this *Router) RigisterController() {
 
 	this.Gin.POST(register.RegisterHandlerUrl, register.RegisterHandler)
 
-	this.Gin.GET(socket.GinEchoUrl, socket.GinEcho)
-
 }
 
 /**
@@ -41,7 +38,6 @@ func (this *Router) RegisterMiddleware() {
 	store := cookie.NewStore([]byte("secret"))
 
 	this.Gin.Use(sessions.Sessions("mysession", store))
-	this.Gin.Use(middleware.MetmodAuthMiddleware)
 	this.Gin.Use(middleware.OriginAcceptMiddleware)
 
 }
