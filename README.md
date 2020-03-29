@@ -1,4 +1,4 @@
-# Gin
+# Gin Site
 [![Go Report Card](https://goreportcard.com/badge/github.com/sdttttt/gin-websocket-dome)](https://goreportcard.com/report/github.com/sdttttt/gin-websocket-dome)
 
 * 項目立於 2019.8.30
